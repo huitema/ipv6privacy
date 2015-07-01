@@ -3,8 +3,8 @@
 
 Network Working Group                                         C. Huitema
 Internet-Draft                                                 Microsoft
-Intended status: Standards Track                           June 30, 2015
-Expires: January 1, 2016
+Intended status: Standards Track                            July 1, 2015
+Expires: January 2, 2016
 
 
    Implications of Randomized Link Layers Addresses for IPv6 Address
@@ -35,7 +35,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on January 1, 2016.
+   This Internet-Draft will expire on January 2, 2016.
 
 Copyright Notice
 
@@ -52,9 +52,9 @@ Copyright Notice
 
 
 
-Huitema                  Expires January 1, 2016                [Page 1]
+Huitema                  Expires January 2, 2016                [Page 1]
 
-Internet-Draft    Random Link Layer and IPv6 Addresses         June 2015
+Internet-Draft    Random Link Layer and IPv6 Addresses         July 2015
 
 
    the Trust Legal Provisions and are provided without warranty as
@@ -108,9 +108,9 @@ Table of Contents
 
 
 
-Huitema                  Expires January 1, 2016                [Page 2]
+Huitema                  Expires January 2, 2016                [Page 2]
 
-Internet-Draft    Random Link Layer and IPv6 Addresses         June 2015
+Internet-Draft    Random Link Layer and IPv6 Addresses         July 2015
 
 
    The purpose of this document is to provide guidance to implementers,
@@ -164,9 +164,9 @@ Internet-Draft    Random Link Layer and IPv6 Addresses         June 2015
 
 
 
-Huitema                  Expires January 1, 2016                [Page 3]
+Huitema                  Expires January 2, 2016                [Page 3]
 
-Internet-Draft    Random Link Layer and IPv6 Addresses         June 2015
+Internet-Draft    Random Link Layer and IPv6 Addresses         July 2015
 
 
       Pick random values for all the other bits.
@@ -220,9 +220,9 @@ Internet-Draft    Random Link Layer and IPv6 Addresses         June 2015
 
 
 
-Huitema                  Expires January 1, 2016                [Page 4]
+Huitema                  Expires January 2, 2016                [Page 4]
 
-Internet-Draft    Random Link Layer and IPv6 Addresses         June 2015
+Internet-Draft    Random Link Layer and IPv6 Addresses         July 2015
 
 
    address is used.  This increase the potential "surface" for privacy
@@ -276,9 +276,9 @@ Internet-Draft    Random Link Layer and IPv6 Addresses         June 2015
 
 
 
-Huitema                  Expires January 1, 2016                [Page 5]
+Huitema                  Expires January 2, 2016                [Page 5]
 
-Internet-Draft    Random Link Layer and IPv6 Addresses         June 2015
+Internet-Draft    Random Link Layer and IPv6 Addresses         July 2015
 
 
    layer address.  This will enable tracking over time of a host that
@@ -332,9 +332,9 @@ Internet-Draft    Random Link Layer and IPv6 Addresses         June 2015
 
 
 
-Huitema                  Expires January 1, 2016                [Page 6]
+Huitema                  Expires January 2, 2016                [Page 6]
 
-Internet-Draft    Random Link Layer and IPv6 Addresses         June 2015
+Internet-Draft    Random Link Layer and IPv6 Addresses         July 2015
 
 
 3.7.  Transition/co-existence technologies
@@ -388,9 +388,9 @@ Internet-Draft    Random Link Layer and IPv6 Addresses         June 2015
 
 
 
-Huitema                  Expires January 1, 2016                [Page 7]
+Huitema                  Expires January 2, 2016                [Page 7]
 
-Internet-Draft    Random Link Layer and IPv6 Addresses         June 2015
+Internet-Draft    Random Link Layer and IPv6 Addresses         July 2015
 
 
 7.2.  Informative References
@@ -444,5 +444,5 @@ Author's Address
 
 
 
-Huitema                  Expires January 1, 2016                [Page 8]
+Huitema                  Expires January 2, 2016                [Page 8]
 

@@ -30,7 +30,7 @@ SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-dhc-anonym
 <?rfc inline='yes' ?>
 
 <rfc category="std" 
-     docName="draft-huitema-6man-random-addresses-00.txt" 
+     docName="draft-huitema-6man-random-addresses-01.txt" 
      ipr="trust200902">
 
 <front>
@@ -68,26 +68,46 @@ link layer addresses change.
 <middle>
 <section title="Introduction">
 <t>
-Reports surfaced recently of systems that would monitor the wireless connections of 
-passengers at Canadian airports <xref target="CNBC" />. We can assume that these are either fragments
-or trial runs of a wider system that would attempt to monitor Internet users as they roam through 
-wireless access points and other temporary network attachments. We can also assume that privacy 
-conscious users will attempt to evade this monitoring, for example by ensuring that low level 
-identifiers like link-layer addresses are "randomized," so that the devices do not broadcast a unique identifier
-in every location that they visit.
+   The IPv6 Maintenance Working Group is in the process of approving a
+   recommending the use of <xref target="RFC7217" /> for the construction of stable IPv6
+   identifiers <xref target="I-D.ietf-6man-ipv6-address-generation-privacy" />.  The
+   mechanism is designed to prevent address scanning or device
+   identification through the use of "opaque" identifiers.  It prevents
+   location tracking by making sure that the same device uses different
+   identifiers at different locations.  However, a strict implementation
+   of <xref target="RFC7217" /> results in stable identifiers, which remain always the
+   same for a given device and a given location.  This is in fact a
+   design goal of <xref target="RFC7217" />.
 </t>
 <t>
-Of course, link layer "MAC" addresses are not the only way to identify a device. After connecting to a
-link, the host will try to obtain IPv6 addresses for that link. There are multiple ways to assign
-these addresses. The privacy implications of various assignment methods are studied in 
-<xref target="I-D.ietf-6man-ipv6-address-generation-privacy" />, but this study does not fully
-take into account the effect of link-layer address randomization. 
+   Privacy conscious users will not agree with this design goal.
+   Suppose for example users who don't want being tracked when they
+   visit an public place at different times.  They will configure their
+   device to use different link layer addresses on the different visits,
+   using a form of MAC Address Randomization.  However, if their devices
+   implement a strict version of <xref target="RFC7217" />, the IPv6 addresses will
+   contain stable identifiers.  The stable identifiers will re-enable
+   the tracking that MAC Address Randomization would have prevented.
 </t>
 <t>
-The purpose of this document is to provide guidance to implementers, so they chose address 
-assignment methods that are compatible with link layer address randomization. This document is 
-complementary to <xref target="I-D.ietf-dhc-anonymity-profile" />, which specifies how
-to use DHCPv6 in conjunction with randomized link-layer addresses.
+   Some systems also use temporary IPv6 addresses, as defined by
+   <xref target="RFC4941" />.  These randomized addresses are defined by generating a
+   randomized interface identifier at controlled intervals, and then
+   using this identifier in conjunction with prefixes advertised by
+   routers to construct addresses with limited life time.  Even with
+   this short life time, the randomized interface identifier could
+   remain constant while the link layer addresses changes with MAC
+   Address Randomization.  This would enable tracking between successive
+   network connections, even if the MAC Address changed.
+</t>
+<t>
+   The purpose of this document is to recommend specific guidelines for
+   the use of <xref target="RFC7217" /> and <xref target="RFC4941" />, in order to make it maintain the
+   privacy benefits of MAC Address Randomization.  Section 2 presents
+   the address randomization mechanisms.  Section 3 presents the
+   guidelines for use of <xref target="RFC7217" />.  Section 4 presents the guidelines
+   for use of <xref target="RFC4941" />.  Section 5 reviews the other address formats
+   commonly used, and their interaction with MAC Address Randomization.
 </t>
 <section title="Requirements">
 <t>
@@ -165,6 +185,144 @@ except under exceptional circumstances such as resetting the "secret key" used i
 
 </section>
 
+<section title="Privacy respecting opaque identifiers" >
+<t>
+<xref target="RFC7217" /> specifies an algorithm that generates, for each network
+interface, a unique random IID per IPv6 link. The privacy properties of
+that algorithm depends on the specific source of the "Net_Iface" 
+chosen by the implementer.
+</t>
+<t>
+Most sources for the Net_IFace parameter listed in Appendix A of
+<xref target="RFC7217" /> will result in stable identifiers, independent 
+of the link-layer address. This will enable tracking over time of a host that 
+repeatedly visits the same location, despite any attempts by
+the host to use different random link-layer address values. In fact, the
+stable IIDs will enable correlation of different link-layer addresses
+to the same host identity.
+</t>
+<t>
+Tracking over time is prevented if the Net_IFace parameter is set to the
+current link layer address. In that case, the stable addresses will have exactly
+the same lifetime as the link-layer identifiers. This SHOULD be the
+default solution for hosts implementing MAC Address Randomization.
+It guarantees that IPv6 addresses will change whenever the link layer addresses
+change. It also guarantees that hosts that return to the same network
+without changing their link layer addresses will reuse the same IPv6 address.
+</t>
+<t>
+Some hosts are static by nature. This is for example the case of servers.
+For such hosts, address stability is probably more important than 
+preventing tracking over time. Such hosts should probably not attempt
+to configure random link layer addresses. 
+</t>
+
+<section title="Update to RFC 7217" >
+<t>
+   Section 5 of [RFC7217], Net_Iface selection, is modified as follow:
+</t>
+<t>
+<list>
+<t>
+      Replace "MUST" by "SHOULD" in the text:
+</t>
+<t>
+      It SHOULD be constant across system bootstrap sequences and other
+      network events (e.g., bringing another interface up or down).
+</t>
+<t>
+      Immediately after that, add:
+</t>
+<t>
+      It MAY change if the system administrator decides so explicitly,
+      e.g. by implementing Link Layer Address Randomization.  This can
+      be achieved by selecting the Current Link Layer Address for Net-
+      Iface parameter.
+</t>
+</list>
+</t>
+<t>
+   The following text is added to Appendix A, section A.3, Link-Layer
+   Addresses:
+</t>
+<t>
+<list>
+<t>
+      Link-Layer addresses will change dynamically in systems that
+      implement Link Layer Address Randomization.  This will cause IIDs
+      to change whenever the Link Address changes, which is very
+      desirable for privacy.
+</t>
+</list>
+</t>
+</section>
+</section>
+
+<section title="Privacy compatible Temporary Addresses" >
+<t>
+As stated in <xref target="I-D.ietf-6man-ipv6-address-generation-privacy" />,
+"a host that uses only a temporary address mitigates all four threats.
+Its activities may only be correlated for the lifetime a single
+temporary address." There is however a condition. If the lifetime of the
+temporary address exceeds the lifetime  of the random link layer address,
+then correlation of successive link-layer addresses becomes possible,
+effectively enabling a form of tracking.
+</t>
+<t>
+If a host uses both temporary and stable addresses, the privacy 
+properties are those of the particular stable addresses. This is 
+also true is a host uses temporary addresses and configure but
+doen't use a stable address. The address configuration will
+require performing duplicate address detection, generating
+at least a few packets on the local links. Observing this packets,
+an on-link attacker can correlate the link-layer address with the 
+stable address. If the stable address includes a constant
+identifier, then the benefits of using random link-local addresses
+will be negated.
+</t>
+<t>
+   This situation is anticipated somewhat in the specification of
+   temporary addresses.  Section 3.5 of [RFC4941] specifies procedure
+   for the regeneration of interface identifiers.  The last paragraph of
+   that section specifies:
+</t>
+<t>
+<list>
+<t>
+      ... when an interface connects to a new link, a new randomized
+      interface identifier SHOULD be generated immediately together with
+      a new set of temporary addresses.
+</t>
+</list>
+</t>
+<t>
+   That condition is however not sufficient to cover the case of a
+   device that re-connects to the same link with a new randomized link
+   local addresses.
+</t>
+
+<section title="Update to RFC 4941" >
+<t>
+   The word "Finally" should be removed from the last paragraph of
+   section 3.5.
+</t>
+<t>
+   The following text should be added at the end of section 3.5:
+</t>
+<t>
+<list>
+<t>
+      Finally, when an interface is reconfigured to use a new link-layer
+      address, a new randomized interface identifier SHOULD be generated
+      immediately together with a new set of temporary addresses.  This
+      reconfiguration ill happen for example as a consequence of MAC
+      Address Randomization.
+</t>
+</list>
+</t>
+</section>
+</section>
+
 
 <section title="Considerations on IPv6 address assignment">
 
@@ -239,61 +397,9 @@ preserve the privacy value of random link-layer addresses.
 </t>
 </section>
 
-<section title="Stable, semantically opaque IIDs" >
-<t>
-<xref target="RFC7217" /> specifies an algorithm that generates, for each network
-interface, a unique random IID per IPv6 link. The privacy properties of
-that algorithm depends on the specific source of the "Net_Iface" 
-chosen by the implementer.
-</t>
-<t>
-Most sources for the Net_IFace parameter listed in Appendix A of
-<xref target="RFC7217" /> will result in stable identifiers, independent 
-of the link-layer address. This will enable tracking over time of a host that 
-repeatedly visits the same location, despite any attempts by
-the host to use different random link-layer address values. In fact, the
-stable IIDs will enable correlation of different link-layer addresses
-to the same host identity.
-</t>
-<t>
-Tracking over time is prevented if the Net_IFace parameter is set to the
-current link layer address. In that case, the stable addresses will have exactly
-the same lifetime as the link-layer identifiers. This SHOULD be the
-default solution for mobile hosts. 
-</t>
-<t>
-Some hosts are static by nature. This is for example the case of servers.
-For such hosts, address stability is probably more important than 
-preventing tracking over time. Such hosts should probably not attempt
-to configure random link layer addresses. They MAY want use a more stable
-sources for the Net_IFace than the link address programmed in the
-network interface card, as explained in <xref target="RFC7217" />.
-</t>
-</section>
 
-<section title="Temporary IIDs" >
-<t>
-As stated in <xref target="I-D.ietf-6man-ipv6-address-generation-privacy" />,
-"a host that uses only a temporary address mitigates all four threats.
-Its activities may only be correlated for the lifetime a single
-temporary address." There is however a condition. If the lifetime of the
-temporary address exceeds the lifetime  of the random link layer address,
-then correlation of successive link-layer addresses become possible,
-effectively enabling a form of tracking.
-</t>
-<t>
-If a host uses both temporary and stable addresses, the privacy 
-properties are those of the particular stable addresses. This is 
-also true is a host uses temporary addresses and configure but
-doen't use a stable address. The address configuration will
-require performing duplicate address detection, generating
-at least a few packets on the local links. Observing this packets,
-an on-link attacker can correlate the link-layer address with the 
-stable address. If the stable address includes a constant
-identifier, then the benefits of using rnadom link-local addresses
-will be negated.
-</t>
-</section>
+
+
 
 <section title="DHCPv6 generation of IIDs" >
 <t>
@@ -336,7 +442,8 @@ This draft does not require any IANA action.
 <section title="Acknowledgments">
     <t> 
 The inspiration for this draft came from the authors of <xref target="I-D.ietf-6man-ipv6-address-generation-privacy"/>, 
-Alissa Cooper, Fernando Gont, and Dave Thaler. 
+Alissa Cooper, Fernando Gont, and Dave Thaler. Philip Homburg and other members of
+   the 6Man working group provided valuable comments.
     </t>
 </section>
 </middle>
@@ -352,21 +459,6 @@ Alissa Cooper, Fernando Gont, and Dave Thaler.
 <references title="Informative References">
     &I-D.ietf-6man-ipv6-address-generation-privacy;
     &I-D.ietf-dhc-anonymity-profile;
-
-    <reference anchor="CNBC" target="http://www.cbc.ca/news/politics/csec-used-airport-wi-fi-to-track-canadian-travellers-edward-snowden-documents-1.2517881">
-        <front>
-            <title>CBC News: CSEC used airport Wi-Fi to track Canadian travellers</title>
-            <author initials="G" surname="Weston" fullname="Greg Weston" />
-            <author initials="G" surname="Greenwald" fullname="Glenn Greenwald" />
-            <author initials="R" surname="Gallagher" fullname="Ryan Gallagher" />
-            <date month="Jan" year="2014" />
-            <abstract>
-	    <t>
-            Electronic snooping was part of a trial run for U.S. NSA and other foreign services
-            </t>
-            </abstract>  
-        </front>
-    </reference>
 
     <reference anchor="IETFMACRandom" target="http://www.ietf.org/blog/2014/11/mac-privacy/">
         <front>
